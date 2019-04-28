@@ -1,0 +1,69 @@
+﻿@using PersonSearch.Models
+@using PersonSearch.Helpers
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/personSearch.js")
+    @Scripts.Render("~/Scripts/personAdd.js")
+}
+
+<div ng-app="app" ng-controller="peopleCtrl" ng-cloak>
+    <div class="searchContainer">
+
+        <div class="toolbarContainer">
+            <div class="leftToolbar">
+                <input type="text" ng-model="nameFilter" class="ui-widget-content ui-corner-all" placeholder="@Resources.Person.PersonSearch" />
+                <input class="@PrettyClasses.Button" type="button" ng-click="getFirstPage()" value="search" />
+            </div>
+            <div class="pagingWidget">
+                <input class="@PrettyClasses.Button" type="button" value="<" ng-click="getPage(-1)" ng-disabled="currentPage == 0" ng-show="requiresPaging()" />
+                @Html.Raw(string.Format(Resources.Person.ShowingOf, "<span ng-bind=\"getStartCount()\"></span>", "<span ng-bind=\"getEndCount()\"></span>", "<span ng-bind=\"totalCount\"></span>"))
+                <input class="@PrettyClasses.Button" type="button" value=">" ng-click="getPage(1)" ng-disabled="getEndCount() == totalCount" ng-show="requiresPaging()" />
+            </div>
+            <div class="rightToolbar">
+                <input id="addButton" type="button" ng-click="openDialog()" value="@Resources.Person.AddPerson" class="@PrettyClasses.Button" />
+            </div>
+        </div>
+
+        <div class="loadingIcon">
+            <img src="Content/Images/loading.gif" />
+        </div>
+
+        <div class="peopleContainer">
+            <div ng-repeat="person in people" class="personContainer">
+                <div class="personRow">
+                    <div class="personInfo">
+                        <div ng-bind="person.firstName + ' ' + person.lastName"></div>
+                        <div>
+                            <span class="personLabel">@Resources.Person.Age:</span>
+                            <span class="personValue" ng-bind="person.age"></span>
+                        </div>
+                        <div ng-show="person.address">
+                            <div style="display: inline-block;">
+                                <span class="personLabel">@Resources.Person.Address:</span>
+                            </div>
+                            <div style="display: inline-block;">
+                                <div ng-show="person.address.street1" ng-bind="person.address.street1"></div>
+                                <div ng-show="person.address.street2" ng-bind="person.address.street2"></div>
+                                <div ng-bind="person.address.city + ', ' + person.address.prettyState + ' ' + person.address.zipCode"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="personPicture">
+                        <div class="imageContainer">
+                            <img ng-if="person.pictureFile != null && person.pictureFile != ''" ng-src="Content/Images/{{ person.pictureFile }}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="hobbyList" ng-show="showHobbies(person)">
+                    <div class="personLabel">@Resources.Person.Hobbies</div>
+                    <div><span ng-bind="getHobbies(person)"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("_Add", new PersonEdit())
+</div>

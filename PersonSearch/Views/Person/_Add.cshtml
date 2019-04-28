@@ -1,0 +1,116 @@
+﻿@using PersonSearch.Models
+@using PersonSearch.Helpers
+@using PersonSearch.Data.Enums
+@using PersonSearch.Services
+@model PersonEdit
+
+<div id="addDialog" style="display: none;" ng-controller="personAddCtrl" ng-init="getHobbies()">
+    <form id="addPersonForm">
+        <div class="addSections">
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.Picture:</span>
+                </div>
+                <div>
+                    <input class="@PrettyClasses.Button" type="button" value="select" ng-click="pictureClick($event)" />
+                    <input id="pictureFile" type="file" />
+                </div>
+                <div class="imageContainer">
+                    <img id="pictureOutput" />
+                </div>
+            </div>
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.FirstName:</span>
+                </div>
+                <div>
+                    <input type="text" class="@PrettyClasses.TextBox" ng-model="formData.@nameof(PersonEdit.FirstName)" />
+                </div>
+            </div>
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.LastName:</span>
+                </div>
+                <div>
+                    <input type="text" class="@PrettyClasses.TextBox" ng-model="formData.@nameof(PersonEdit.LastName)" />
+                </div>
+            </div>
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.BirthDate:</span>
+                </div>
+                <div>
+                    <input type="text" readonly="readonly" ng-model="formData.@nameof(PersonEdit.BirthDate)" class="useDatePicker @PrettyClasses.TextBox" />
+                </div>
+            </div>
+        </div>
+        <div class="addSections">
+            <div class="addSectionsHeader">
+                <span class="personLabel">@Resources.Person.Address</span>
+            </div>
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.Street1:</span>
+                </div>
+                <div>
+                    <input type="text" class="@PrettyClasses.TextBox"
+                           ng-model="formData.@(nameof(PersonEdit.Address)).@nameof(PersonEdit.Address.Street1)" />
+                </div>
+            </div>
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.Street2:</span>
+                </div>
+                <div>
+                    <input type="text" class="@PrettyClasses.TextBox"
+                           ng-model="formData.@(nameof(PersonEdit.Address)).@nameof(PersonEdit.Address.Street2)" />
+                </div>
+            </div>
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.City:</span>
+                </div>
+                <div>
+                    <input type="text" class="@PrettyClasses.TextBox"
+                           ng-model="formData.@(nameof(PersonEdit.Address)).@nameof(PersonEdit.Address.City)" />
+                </div>
+            </div>
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.State:</span>
+                </div>
+                <div>
+                    <select ng-model="formData.@(nameof(PersonEdit.Address)).@nameof(PersonEdit.Address.State)">
+                        @foreach (var state in typeof(State).GetEnumValues()) {
+                            <option value="@state">@(((State)state).ToDisplay())</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="addSection">
+                <div>
+                    <span class="personLabel">@Resources.Person.ZipCode:</span>
+                </div>
+                <div>
+                    <input type="text" class="@PrettyClasses.TextBox"
+                           ng-model="formData.@(nameof(PersonEdit.Address)).@nameof(PersonEdit.Address.ZipCode)" />
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="addSectionsHeader">
+                <span class="personLabel">@Resources.Person.Hobbies</span>
+            </div>
+            <div>
+                <div class="hobbyOption" ng-repeat="hobby in hobbies">
+                    <input type="checkbox" ng-model="formData.@(nameof(PersonEdit.Hobbies))[hobby.id]" />
+                    <label ng-bind="hobby.hobbyType"></label>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="dialogActions">
+        <input class="@PrettyClasses.Button" type="button" ng-click="save()" value="@Resources.Person.Save" />
+        <input class="@PrettyClasses.Button" type="button" ng-click="cancel()" value="@Resources.Person.Cancel" />
+    </div>
+</div>
